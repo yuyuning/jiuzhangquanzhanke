@@ -3,9 +3,9 @@ import { NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { JhiEventManager } from 'ng-jhipster';
 
 import { LoginModalService, Principal, Account } from 'app/core';
-import { Course } from './course.model';
 import { CourseService } from 'app/shared/service/CourseService';
 import { CourseDto } from 'app/shared/model/course-dto.model';
+import { CourseWithTNDto } from 'app/shared/model/courseWithTN-dto.model';
 
 @Component({
     selector: 'jhi-home',
@@ -15,6 +15,7 @@ import { CourseDto } from 'app/shared/model/course-dto.model';
 export class HomeComponent implements OnInit {
     account: Account;
     modalRef: NgbModalRef;
+    classeNameNeedToReg: string;
 
     constructor(
         private principal: Principal,
@@ -23,11 +24,9 @@ export class HomeComponent implements OnInit {
         private courseService: CourseService
     ) {}
 
-    courses: CourseDto[] = [
-        // new Course('testCourse1', 'USA', 'testContent1', '100'),
-        // new Course('testCourse2', 'USA', 'testContent2', '200'),
-        // new Course('testCourse3', 'CHN', 'testContent3', '300')
-    ];
+    courses: CourseDto[] = [];
+
+    coursesWithTN: CourseWithTNDto[] = [];
 
     ngOnInit() {
         this.principal.identity().then(account => {
@@ -61,6 +60,20 @@ export class HomeComponent implements OnInit {
             }
         });
     }
+
+    getAllCoursesWithTN() {
+        this.courseService.getCourseInfoWithTN().subscribe(curDto => {
+            if (!curDto) {
+                this.coursesWithTN = [];
+            } else {
+                this.coursesWithTN = curDto;
+            }
+        });
+    }
+
+    // registerCourse(courseName) {
+    //
+    // }
 
     clearAllCourses() {
         this.courses = [];

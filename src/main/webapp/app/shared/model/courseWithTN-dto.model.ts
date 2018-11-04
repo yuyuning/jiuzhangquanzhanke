@@ -1,6 +1,6 @@
-export interface CourseDto {
+export interface CourseWithTNDto {
     courseName: string;
     courseLocation: string;
     courseContent: string;
-    courseTeacher: string;
+    teacherName: string;
 }

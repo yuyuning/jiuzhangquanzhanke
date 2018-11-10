@@ -8,6 +8,7 @@ import com.mycompany.myapp.domain.dto.CourseWithTNDto;
 import com.mycompany.myapp.repository.CourseRepository;
 import com.mycompany.myapp.repository.UserCourseRepository;
 import org.checkerframework.checker.units.qual.A;
+import org.checkerframework.checker.units.qual.C;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -61,5 +62,27 @@ public class CourseService {
         } else {
             throw new Exception("UnExpected Exception");
         }
+    }
+
+    public void addCourse(CourseDto course) throws Exception{
+        Optional<Course> courseDto = courseRepository.findCourseByCourseName(course.getCourseName());
+
+        if(courseDto.isPresent()){
+            throw new Exception("Course is existing.");
+        }
+
+        Course courseBeingSaved = Course.builder()
+            .courseName(course.getCourseName())
+            .courseContent(course.getCourseContent())
+            .courseLocation(course.getCourseContent())
+            .teacherId(course.getTeacherId())
+            .build();
+
+        try {
+            courseRepository.saveAndFlush(courseBeingSaved);
+        } catch (Exception e){
+            throw new Exception(e.getMessage());
+        }
+
     }
 }

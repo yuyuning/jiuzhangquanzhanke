@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.constraints.NotNull;
 import java.util.List;
 
 @RestController
@@ -47,6 +48,15 @@ public class CourseController {
             return HttpStatus.OK;
         } catch (Exception e) {
             return HttpStatus.UNPROCESSABLE_ENTITY;
+        }
+    }
+
+    @PostMapping(path = "/api/course/addCourse", produces = "application/json")
+    public HttpStatus addCourse(@RequestBody @NotNull CourseDto course){
+        try {
+            courseService.addCourse(course);
+        } catch (Exception e) {
+            return HttpStatus.BAD_REQUEST;
         }
     }
 }

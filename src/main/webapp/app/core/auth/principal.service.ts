@@ -88,6 +88,14 @@ export class Principal {
         return this.authenticated;
     }
 
+    isTeacher(): boolean {
+        return false;
+    }
+
+    isStduent(): boolean {
+        return false;
+    }
+
     isIdentityResolved(): boolean {
         return this.userIdentity !== undefined;
     }

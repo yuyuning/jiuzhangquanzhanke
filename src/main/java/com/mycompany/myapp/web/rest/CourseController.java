@@ -4,6 +4,7 @@ import com.mycompany.myapp.domain.dto.CourseDto;
 import com.mycompany.myapp.domain.dto.CourseWithTNDto;
 import com.mycompany.myapp.service.CourseService;
 import io.swagger.annotations.Api;
+import org.hibernate.validator.constraints.NotBlank;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
@@ -22,6 +23,7 @@ public class CourseController {
 
     @GetMapping(path = "/api/course/findAllCourses", produces = "application/json")
     public HttpEntity<List<CourseDto>> findAllCourses(){
+        
         List<CourseDto> allCourses = courseService.findAllCourses();
 
         return new ResponseEntity<>(allCourses, HttpStatus.OK);
@@ -55,6 +57,26 @@ public class CourseController {
     public HttpStatus addCourse(@RequestBody @NotNull CourseDto course) {
         try {
             courseService.addCourse(course);
+            return HttpStatus.OK;
+        } catch (Exception e) {
+            return HttpStatus.BAD_REQUEST;
+        }
+    }
+
+    @PutMapping(path = "/api/course/updateCourse", produces = "application/json")
+    public HttpStatus updateCourse(@RequestBody @NotNull CourseDto course) {
+        try {
+            courseService.updateCourse(course);
+            return HttpStatus.OK;
+        } catch (Exception e) {
+            return HttpStatus.BAD_REQUEST;
+        }
+    }
+
+    @DeleteMapping(path = "/api/course/deleteCourse/{courseName}", produces = "application/js")
+    public HttpStatus deleteCourse(@NotNull @PathVariable("courseName") String courseName) {
+        try {
+            courseService.deleteCourse(courseName);
             return HttpStatus.OK;
         } catch (Exception e) {
             return HttpStatus.BAD_REQUEST;

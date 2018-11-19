@@ -10,6 +10,7 @@ import com.mycompany.myapp.repository.UserCourseRepository;
 import org.checkerframework.checker.units.qual.A;
 import org.checkerframework.checker.units.qual.C;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,13 +30,18 @@ public class CourseService {
     @Autowired
     private UserService userService;
 
-    public List<CourseDto> findAllCourses(){
-        List<Course> courses= courseRepository.findAll();
+    List<CourseDto> courseDtos = new ArrayList<>();
 
-        List<CourseDto> courseDtos = new ArrayList<>();
+    public List<CourseDto> findAllCourses() {
 
-        for(Course c : courses) {
-            courseDtos.add(new CourseDto(c.getCourseName(), c.getCourseLocation(), c.getCourseContent(), c.getTeacherId()));
+        //Cache
+        if (courseDtos.isEmpty()) {
+            List<Course> courses = courseRepository.findAll();
+            for (Course c : courses) {
+                courseDtos.add(new CourseDto(c.getCourseName(), c.getCourseLocation(), c.getCourseContent(), c.getTeacherId()));
+            }
+
+            return courseDtos;
         }
 
         return courseDtos;
@@ -83,6 +89,36 @@ public class CourseService {
         } catch (Exception e){
             throw new Exception(e.getMessage());
         }
+
+    }
+
+    public void deleteCourse(String courseName) throws Exception{
+        Optional<Course> OptionalExistingCourse = courseRepository.findCourseByCourseName(courseName);
+
+        if(!OptionalExistingCourse.isPresent()){
+            throw new Exception("Course is not exist.");
+        }
+
+        try {
+            courseRepository.delete(OptionalExistingCourse.get());
+        } catch (Exception e){
+            throw new Exception(e.getMessage());
+        }
+    }
+
+
+    public void updateCourse(CourseDto course) throws Exception{
+        Optional<Course> OptionalExistingCourse = courseRepository.findCourseByCourseName(course.getCourseName());
+
+        if(!OptionalExistingCourse.isPresent()){
+            throw new Exception("Course is not exist.");
+        }
+
+        Course existingCourse = OptionalExistingCourse.get();
+        existingCourse.setCourseContent(course.getCourseContent());
+        existingCourse.setCourseLocation(course.getCourseLocation());
+        existingCourse.setCourseName(course.getCourseName());
+        existingCourse.setTeacherId(course.getTeacherId());
 
     }
 }

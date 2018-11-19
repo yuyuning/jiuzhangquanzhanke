@@ -9,6 +9,8 @@ import { CourseWithTNDto } from 'app/shared/model/courseWithTN-dto.model';
 export class CourseService {
     private courseAddressUrl = SERVER_API_URL + '/api/course/findAllCoursesDto';
     private courseAddressWithTNUrl = SERVER_API_URL + '/api/course/findAllCoursesWithTNDto';
+    private courseDeleteUrl = SERVER_API_URL + '/api/course/deleteCourse';
+    private courseUpdateUrl = SERVER_API_URL + '/api/course/updateCourse';
 
     constructor(private http: HttpClient) {}
 
@@ -18,5 +20,13 @@ export class CourseService {
 
     getCourseInfoWithTN(): Observable<CourseWithTNDto[]> {
         return this.http.get<CourseWithTNDto[]>(`${this.courseAddressWithTNUrl}`);
+    }
+
+    delete(courseName: String): Observable<Response> {
+        return this.http.delete<Response>(`${this.courseDeleteUrl}/${courseName}`);
+    }
+
+    update(course: CourseDto): Observable<Response> {
+        return this.http.put<Response>(this.courseUpdateUrl, course);
     }
 }
